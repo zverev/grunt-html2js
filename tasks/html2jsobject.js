@@ -67,7 +67,7 @@ module.exports = function(grunt) {
 	// compile a template to an angular module
 	var compileTemplate = function(moduleName, filepath, quoteChar, indentString, useStrict, htmlmin, process) {
 		var content = getContent(filepath, quoteChar, indentString, htmlmin, process);
-
+		content = moduleName + ": " + quoteChar + content + quoteChar;
 		return content;
 	};
 
@@ -84,9 +84,47 @@ module.exports = function(grunt) {
 		return module;
 	};
 
+	var getFileName = function(filepath, extension) {
+		var reg = "\/(\\w+)" + extension;
+		var regExp = new RegExp(reg);
+		return regExp.exec(filepath)[1];
+	};
+
+	var wrapIntoObject = function(modulename, content) {
+		return "var " + modulename + " = {" + content + "};"
+	};
+
 	grunt.registerMultiTask('html2jsobject', 'Compiles HTML templates to a single JavaScript object.', function() {
+		var options = this.options({
+			base: 'src',
+			module: 'templates-' + this.target,
+			quoteChar: '"',
+			fileHeaderString: '',
+			fileFooterString: '',
+			indentString: '  ',
+			target: 'js',
+			htmlmin: {},
+			process: false,
+			extension: ".html"
+		});
+
+		var counter = 0;
+
+		// generate a separate module
+		this.files.forEach(function(f) {
+
+			var modules = f.src.filter(existsFilter).map(function(filepath) {
+				var name = (getFileName(filepath, options.extension));
+				return compileTemplate(name, filepath, options.quoteChar, options.indentString, options.useStrict, options.htmlmin, options.process);
+			});
+
+			counter += modules.length;
+			modules = modules.join(',\n');
+
+			grunt.file.write(f.dest, grunt.util.normalizelf(wrapIntoObject(f.container || "noname", modules)));
+		});
 
 		//Just have one output, so if we making thirty files it only does one line
-		grunt.log.writeln("Successfully converted "+("green").green + " html templates to " + "red".red + ".");
+		grunt.log.writeln("Successfully converted "+("" + counter).green + " html templates to " + "red".red + ".");
 	});
 };
