@@ -1,16 +1,5 @@
 {
   "name": "grunt-html2jsobject",
   "description": "Compiles HTML templates to a single JavaScript object",
-  "version": "0.1.0",
-  "homepage": "https://github.com/zverev/grunt-html2jsobject",
-  "author": {
-    "name": "Alexander Zverev",
-    "email": "alexander.zverev@gmail.com"
-  },
-  "main": "tasks/html2jsobject.js",
-  "readme": "don't read it",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/zverev/grunt-html2jsobject.git"
-  }
+  "version": "0.1.0"
 }
