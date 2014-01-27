@@ -8,15 +8,17 @@
 module.exports = function(grunt) {
 	grunt.initConfig({
 		html2jsobject: {
-			options: {
-				// custom options
-			},
-			subscriptions: {
-				container: "nsGmx.Templates.Subscriptions",
-				src: ['src/**/*.html'],
-				dest: 'tmp/templates.js'
-			}
-		}
+        	subscriptions: {
+        		options: {
+        			newObject: false,
+        			fileHeaderString: "var nsGmx = nsGmx || {};",
+        			fileFooterString: "/* --- footer --- */"
+        		},
+        	   	container: "nsGmx.Templates.Subscriptions",
+            	src: ['client/js/Controls/Subscriptions/*.html'],
+        		dest: 'client/js/Controls/Subscriptions/Templates.js'
+        	}
+       	}
 	});
 
 	grunt.loadNpmTasks('grunt-html2jsobject');

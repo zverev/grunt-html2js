@@ -90,8 +90,12 @@ module.exports = function(grunt) {
 		return regExp.exec(filepath)[1];
 	};
 
-	var wrapIntoObject = function(modulename, content) {
-		return "var " + modulename + " = {" + content + "};"
+	var wrapIntoObject = function(modulename, content, newObject) {
+		if (newObject) {
+			return "var " + modulename + " = {" + content + "};"
+		} else {
+			return modulename + " = {" + content + "};"
+		}
 	};
 
 	grunt.registerMultiTask('html2jsobject', 'Compiles HTML templates to a single JavaScript object.', function() {
@@ -105,7 +109,8 @@ module.exports = function(grunt) {
 			target: 'js',
 			htmlmin: {},
 			process: false,
-			extension: ".html"
+			extension: ".html",
+			newObject: true
 		});
 
 		var counter = 0;
@@ -118,10 +123,15 @@ module.exports = function(grunt) {
 				return compileTemplate(name, filepath, options.quoteChar, options.indentString, options.useStrict, options.htmlmin, options.process);
 			});
 
+			var fileHeader = options.fileHeaderString !== '' ? options.fileHeaderString + '\n' : '';
+			var fileFooter = options.fileFooterString !== '' ? options.fileFooterString + '\n' : '';
+
 			counter += modules.length;
 			modules = modules.join(',\n');
 
-			grunt.file.write(f.dest, grunt.util.normalizelf(wrapIntoObject(f.container || "noname", modules)));
+			var body = wrapIntoObject(f.container || "noname", modules, options.newObject);
+
+			grunt.file.write(f.dest, grunt.util.normalizelf(fileHeader + body + fileFooter));
 		});
 
 		//Just have one output, so if we making thirty files it only does one line
