@@ -7,7 +7,8 @@
     "name": "Alexander Zverev",
     "email": "alexander.zverev@gmail.com"
   },
-  "main": "tasks/html2jsobject",
+  "main": "tasks/html2jsobject.js",
+  "readme": "don't read it",
   "repository": {
     "type": "git",
     "url": "https://github.com/zverev/grunt-html2jsobject.git"
